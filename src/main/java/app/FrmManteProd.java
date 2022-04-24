@@ -60,7 +60,7 @@ public class FrmManteProd extends JFrame {
 	public FrmManteProd() {
 		setTitle("Mantenimiento de Productos");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 390);
+		setBounds(100, 100, 450, 433);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -72,7 +72,7 @@ public class FrmManteProd extends JFrame {
 				registrar();
 			}
 		});
-		btnNewButton.setBounds(324, 29, 89, 23);
+		btnNewButton.setBounds(324, 10, 89, 23);
 		contentPane.add(btnNewButton);
 		
 		JScrollPane scrollPane = new JScrollPane();
@@ -88,7 +88,7 @@ public class FrmManteProd extends JFrame {
 				listado();
 			}
 		});
-		btnListado.setBounds(177, 322, 89, 23);
+		btnListado.setBounds(176, 360, 89, 23);
 		contentPane.add(btnListado);
 		
 		txtCódigo = new JTextField();
@@ -136,12 +136,21 @@ public class FrmManteProd extends JFrame {
 		contentPane.add(txtPrecio);
 		
 		JLabel lblProvedor = new JLabel("Proveedor:");
-		lblProvedor.setBounds(210, 103, 102, 14);
+		lblProvedor.setBounds(209, 103, 102, 14);
 		contentPane.add(lblProvedor);
 		
 		cboProvedor = new JComboBox();
 		cboProvedor.setBounds(310, 103, 86, 22);
 		contentPane.add(cboProvedor);
+		
+		JButton btnBuscar = new JButton("Buscar");
+		btnBuscar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				buscarProducto();
+			}
+		});
+		btnBuscar.setBounds(324, 44, 89, 23);
+		contentPane.add(btnBuscar);
 		
 		llenaCombo();
 	}
@@ -186,12 +195,29 @@ public class FrmManteProd extends JFrame {
 			txtSalida.append("Código....:" + p.getCodigo() + "\n");
 			txtSalida.append("Nombre....:" + p.getDescripcion() + "\n");
 			txtSalida.append("Precio....:" + p.getPrecio() + "\n");
+			txtSalida.append("Stock.....:" + p.getStock() + "\n");
 			txtSalida.append("IDCategoría.:" + p.getIdcategoria() + "\n");
 			txtSalida.append("Categoría.:" + p.getCategoria().getDescripcion() + "\n");
 			txtSalida.append("IDProveedor.:" + p.getIdprovedor() + "\n");
 			txtSalida.append("Proveedor.:" + p.getProveedor().getNombre_rs() + "\n");
 			txtSalida.append("********************************\n");
 		}
+	}
+	
+	void buscarProducto() {
+		EntityManagerFactory fabrica = Persistence.createEntityManagerFactory("mysql");
+		EntityManager em = fabrica.createEntityManager();
+
+		// .....acciones
+		Producto p = em.find(Producto.class, txtCódigo.getText());
+		
+		if(p != null) {
+			txtDescripcion.setText(p.getDescripcion());
+		}
+		else
+			txtSalida.append("Código no existe");
+
+		em.close();
 	}
 	
 	void registrar() {
